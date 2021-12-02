@@ -1,16 +1,19 @@
-const fs = require('fs');
+const input = process.argv.slice(2);
 const request = require('request');
-const url = 'https://api.thecatapi.com/v1/breeds/search?q=sib';
+const url = 'https://api.thecatapi.com/v1/breeds/search?q=' + input;
 
+const fetchBreedDescription = function (breedName, callback) {
 request(url, (error, response, body) => {
-  
-  try{
-    let json = JSON.parse(body);   
-    
-    console.log(json[0].description);
-  } catch {
-    console.log(error);
-  }
-
-  
+  const data = JSON.parse(body);
+  breedName = data[0]
+  if (error) {
+    callback('error', null)
+  } else if (breedName == null) {
+    console.log('error')
+  } else {
+    callback(null, breedName.description);
+   }
 });
+};
+
+module.exports = {fetchBreedDescription};
